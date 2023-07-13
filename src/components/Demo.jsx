@@ -11,6 +11,8 @@ function Demo() {
 
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
+  const [copied, setCopied] = useState("");
+
   useEffect(() => {
     const articlesFromLocalStorage = JSON.parse(
       localStorage.getItem("article")
@@ -31,6 +33,12 @@ function Demo() {
       setAllArticles(updatedAllArticles);
       localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
     }
+  };
+
+  const handleCopy = (copyUrl) => {
+    setCopied(copyUrl);
+    navigator.clipboard.writeText(copyUrl);
+    setTimeout(() => setCopied(false), 3000);
   };
 
   return (
@@ -73,9 +81,12 @@ function Demo() {
               onClick={() => setArticle(article)}
               className="p-3 flex justify-start items-center flex-row bg-white border border-gray-200 gap-3 rounded-lg cursor-pointer"
             >
-              <div className="w-7 h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199, 199, 199, 0.2)] backdrop-blur flex justify-center items-center cursor-pointer">
+              <div
+                className="w-7 h-7 rounded-full bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199, 199, 199, 0.2)] backdrop-blur flex justify-center items-center cursor-pointer"
+                onClick={() => handleCopy(article.url)}
+              >
                 <img
-                  src={copy}
+                  src={copied === article.url ? tick : copy}
                   alt="copy-icon"
                   className="w-[40%] h-[40%] object-contain"
                 />
